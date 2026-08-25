@@ -1,0 +1,71 @@
+{
+  "name": "nnyj-tweaks",
+  "displayName": "NNYJ Tweaks",
+  "description": "QoL bundle: timed policy override toggles, locked-group editor placement, line highlights, each feature toggleable",
+  "version": "1.0.0",
+  "icon": "images/icon.png",
+  "keywords": ["tweaks", "line highlight", "editor group", "status bar"],
+  "publisher": "nnyj",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./src/extension.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nnyj/vscode-nnyj-tweaks.git"
+  },
+  "contributes": {
+    "commands": [
+      { "command": "nnyjTweaks.policy.pick", "title": "Policy Toggle: Allow Group Temporarily" },
+      { "command": "nnyjTweaks.policy.clear", "title": "Policy Toggle: Clear All Overrides" },
+      { "command": "nnyjTweaks.lineHighlight.toggle", "title": "Line Highlight: Toggle on Selected Lines" },
+      { "command": "nnyjTweaks.lineHighlight.clearAll", "title": "Line Highlight: Clear All" }
+    ],
+    "configuration": {
+      "properties": {
+        "nnyjTweaks.policyToggle.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Status bar toggle for temporary policy ask-group overrides."
+        },
+        "nnyjTweaks.openLeft.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Swap auto-split file groups to the left of locked webview groups."
+        },
+        "nnyjTweaks.lineHighlight.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "In-session line highlight toggle commands."
+        },
+        "nnyjTweaks.lineHighlight.color": {
+          "type": "string",
+          "default": "#ffe60030",
+          "description": "Highlight background color, hex with alpha."
+        },
+        "nnyjTweaks.policyToggle.policyPath": {
+          "type": "string",
+          "default": "C:/N/scripts/ai/policy/policy.json",
+          "description": "Path to policy.json, source of ask group names."
+        },
+        "nnyjTweaks.policyToggle.overridesPath": {
+          "type": "string",
+          "default": "C:/N/scripts/ai/policy/overrides.json",
+          "description": "Path to the overrides file read by the policy guards."
+        },
+        "nnyjTweaks.policyToggle.durations": {
+          "type": "array",
+          "default": ["30m", "1h", "2h", "4h", "8h"],
+          "items": { "type": "string" },
+          "description": "Durations offered in the picker. Suffix m, h, or d."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "package": "npx @vscode/vsce package"
+  }
+}
