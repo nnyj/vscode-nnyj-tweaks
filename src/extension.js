@@ -2,8 +2,9 @@ const vscode = require('vscode');
 const policy_toggle = require('./policy_toggle');
 const open_left = require('./open_left');
 const line_highlight = require('./line_highlight');
+const close_empty = require('./close_empty');
 
-const FEATURES = { policyToggle: policy_toggle, openLeft: open_left, lineHighlight: line_highlight };
+const FEATURES = { policyToggle: policy_toggle, openLeft: open_left, lineHighlight: line_highlight, closeEmpty: close_empty };
 const active = {};
 
 function sync(ctx) {

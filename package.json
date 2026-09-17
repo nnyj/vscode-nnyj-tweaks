@@ -1,8 +1,8 @@
 {
   "name": "nnyj-tweaks",
   "displayName": "NNYJ Tweaks",
-  "description": "QoL bundle: timed policy override toggles, locked-group editor placement, line highlights, each feature toggleable",
-  "version": "1.0.0",
+  "description": "QoL bundle: timed policy override toggles, locked-group editor placement, locked empty group close, line highlights, each feature toggleable",
+  "version": "1.0.1",
   "icon": "images/icon.png",
   "keywords": ["tweaks", "line highlight", "editor group", "status bar"],
   "publisher": "nnyj",
@@ -35,6 +35,11 @@
           "type": "boolean",
           "default": true,
           "description": "Swap auto-split file groups to the left of locked webview groups."
+        },
+        "nnyjTweaks.closeEmpty.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Close a locked editor group once its last tab closes."
         },
         "nnyjTweaks.lineHighlight.enabled": {
           "type": "boolean",
