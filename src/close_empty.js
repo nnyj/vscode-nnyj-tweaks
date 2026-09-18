@@ -1,23 +1,22 @@
 const vscode = require('vscode');
 
-const ORD = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth'];
-
 // VS Code keeps locked groups open when their last tab closes, closeEmptyGroups skips them
 function start() {
-  return vscode.window.tabGroups.onDidChangeTabs(async e => {
-    for (const tab of e.closed) {
-      const col = tab.group.viewColumn;
-      const group = vscode.window.tabGroups.all.find(g => g.viewColumn === col);
-      if (!group || group.tabs.length !== 0) continue;
-      const ord = ORD[col - 1];
-      if (!ord) continue;
-      await vscode.commands.executeCommand(`workbench.action.focus${ord}EditorGroup`);
-      await vscode.commands.executeCommand('workbench.action.unlockEditorGroup');
-      // sole group cannot be closed, unlocked it accepts the next editor instead of splitting
-      if (vscode.window.tabGroups.all.length > 1) {
-        await vscode.commands.executeCommand('workbench.action.closeEditorsAndGroup');
+  return vscode.window.tabGroups.onDidChangeTabs(e => {
+    const groups = new Set(e.closed.map(tab => tab.group));
+    // wait for moves/drag-outs to finish, the group object is live, viewColumns are not stable
+    setTimeout(async () => {
+      for (const group of groups) {
+        const live = vscode.window.tabGroups.all.find(g => g === group);
+        if (!live || live.tabs.length !== 0) continue;
+        if (vscode.window.tabGroups.all.length > 1) {
+          await vscode.window.tabGroups.close(live, true);
+        } else if (live.isActive) {
+          // sole group cannot be closed, unlocked it accepts the next editor instead of splitting
+          await vscode.commands.executeCommand('workbench.action.unlockEditorGroup');
+        }
       }
-    }
+    }, 150);
   });
 }
 

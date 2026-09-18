@@ -61,7 +61,7 @@ Policy toggle watches the overrides directory (a directory watch, since guards d
 
 Open left listens to tab group changes. A newly opened single-file group whose left neighbor contains no file tabs is treated as an auto-split beside a locked webview, and gets moved one group left.
 
-Close empty listens to tab close events. If the closed tab left its group with zero tabs and other groups exist, the group is focused, unlocked, then closed. A sole group is only unlocked, so the next editor reuses it instead of splitting beside it.
+Close empty listens to tab close events. After a short settle delay, a group left with zero tabs is closed via the tab groups API (no focus change, safe across auxiliary windows). A sole active group is only unlocked, so the next editor reuses it instead of splitting beside it.
 
 ## Install
 
@@ -76,7 +76,7 @@ Or build locally:
 
 ```sh
 npm run package
-code --install-extension nnyj-tweaks-1.0.1.vsix
+code --install-extension nnyj-tweaks-1.0.2.vsix
 ```
 
 ## License

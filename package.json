@@ -2,7 +2,7 @@
   "name": "nnyj-tweaks",
   "displayName": "NNYJ Tweaks",
   "description": "QoL bundle: timed policy override toggles, locked-group editor placement, locked empty group close, line highlights, each feature toggleable",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "icon": "images/icon.png",
   "keywords": ["tweaks", "line highlight", "editor group", "status bar"],
   "publisher": "nnyj",
