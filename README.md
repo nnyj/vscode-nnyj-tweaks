@@ -17,6 +17,12 @@ Quality-of-life bundle for VS Code. Each feature toggles independently in the Se
 - Open left: when opening a file auto-splits a new editor group to the right of a locked webview group, moves the new group to the left so the webview stays rightmost
 - Close empty: when the last tab in a locked group closes, unlocks and closes the group, VS Code otherwise leaves an empty locked canvas that `closeEmptyGroups` skips
 - Line highlight: toggle a background highlight on selected lines, single color, tracks line moves during edits, in-session only (cleared on window reload)
+- Markdown tables:
+  - Tab and Shift+Tab navigate cells and pad columns
+  - Tab past the last cell adds a row
+  - Insert, move and align columns from the editor context menu
+  - Convert selected CSV or TSV, including quoted fields
+  - Format all tables through a command or optional format-on-save
 
 ## Usage
 
@@ -39,6 +45,15 @@ Suggested keybinding:
 
 Open left and close empty run automatically, no commands.
 
+Table commands use the `Table:` prefix in the Command Palette and the `Markdown Table` editor context menu.
+
+- Table editing supports Markdown, MDX and Quarto
+- Code fences are skipped
+- CSV and TSV use the first row as headers and convert embedded newlines to `<br>`
+- Unicode padding counts emoji graphemes as two columns
+- NNYJ Syntax Highlight supplies fixed emoji display widths and table borders
+- Disable other table extensions that bind Tab to prevent conflicts
+
 ## Settings
 
 | Property | Default | Description |
@@ -48,6 +63,8 @@ Open left and close empty run automatically, no commands.
 | `nnyjTweaks.closeEmpty.enabled` | `true` | Enable locked empty group close |
 | `nnyjTweaks.lineHighlight.enabled` | `true` | Enable line highlight commands |
 | `nnyjTweaks.lineHighlight.color` | `#ffe60030` | Highlight background, hex with alpha |
+| `nnyjTweaks.table.enabled` | `true` | Enable table editing |
+| `nnyjTweaks.table.format_on_save` | `false` | Format tables before saving |
 | `nnyjTweaks.policyToggle.policyPath` | `C:/N/scripts/ai/policy/policy.json` | Source of ask group names |
 | `nnyjTweaks.policyToggle.overridesPath` | `C:/N/scripts/ai/policy/overrides.json` | Overrides file read by the policy guards |
 | `nnyjTweaks.policyToggle.durations` | `["30m", "1h", "2h", "4h", "8h"]` | Durations offered in the picker |
@@ -76,7 +93,7 @@ Or build locally:
 
 ```sh
 npm run package
-code --install-extension nnyj-tweaks-1.0.2.vsix
+code --install-extension nnyj-tweaks-1.1.0.vsix
 ```
 
 ## License

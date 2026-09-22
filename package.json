@@ -1,17 +1,26 @@
 {
   "name": "nnyj-tweaks",
   "displayName": "NNYJ Tweaks",
-  "description": "QoL bundle: timed policy override toggles, locked-group editor placement, locked empty group close, line highlights, each feature toggleable",
-  "version": "1.0.2",
+  "description": "QoL bundle: Markdown tables, policy toggles, editor group fixes and line highlights, each feature toggleable",
+  "version": "1.1.0",
   "icon": "images/icon.png",
-  "keywords": ["tweaks", "line highlight", "editor group", "status bar"],
+  "keywords": [
+    "tweaks",
+    "line highlight",
+    "editor group",
+    "status bar"
+  ],
   "publisher": "nnyj",
   "license": "MIT",
   "engines": {
     "vscode": "^1.75.0"
   },
-  "categories": ["Other"],
-  "activationEvents": ["onStartupFinished"],
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./src/extension.js",
   "repository": {
     "type": "git",
@@ -19,10 +28,22 @@
   },
   "contributes": {
     "commands": [
-      { "command": "nnyjTweaks.policy.pick", "title": "Policy Toggle: Allow Group Temporarily" },
-      { "command": "nnyjTweaks.policy.clear", "title": "Policy Toggle: Clear All Overrides" },
-      { "command": "nnyjTweaks.lineHighlight.toggle", "title": "Line Highlight: Toggle on Selected Lines" },
-      { "command": "nnyjTweaks.lineHighlight.clearAll", "title": "Line Highlight: Clear All" }
+      {"command":"nnyjTweaks.policy.pick","title":"Policy Toggle: Allow Group Temporarily"},
+      {"command":"nnyjTweaks.policy.clear","title":"Policy Toggle: Clear All Overrides"},
+      {"command":"nnyjTweaks.lineHighlight.toggle","title":"Line Highlight: Toggle on Selected Lines"},
+      {"command":"nnyjTweaks.lineHighlight.clearAll","title":"Line Highlight: Clear All"},
+      {"command":"nnyjTweaks.table.next_cell","title":"Table: Next Cell","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly && nnyjTweaks.table.in_table"},
+      {"command":"nnyjTweaks.table.previous_cell","title":"Table: Previous Cell","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly && nnyjTweaks.table.in_table"},
+      {"command":"nnyjTweaks.table.insert_left","title":"Table: Insert Column Left","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly && nnyjTweaks.table.in_table"},
+      {"command":"nnyjTweaks.table.insert_right","title":"Table: Insert Column Right","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly && nnyjTweaks.table.in_table"},
+      {"command":"nnyjTweaks.table.move_left","title":"Table: Move Column Left","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly && nnyjTweaks.table.in_table"},
+      {"command":"nnyjTweaks.table.move_right","title":"Table: Move Column Right","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly && nnyjTweaks.table.in_table"},
+      {"command":"nnyjTweaks.table.align_left","title":"Table: Align Left","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly && nnyjTweaks.table.in_table"},
+      {"command":"nnyjTweaks.table.align_center","title":"Table: Align Center","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly && nnyjTweaks.table.in_table"},
+      {"command":"nnyjTweaks.table.align_right","title":"Table: Align Right","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly && nnyjTweaks.table.in_table"},
+      {"command":"nnyjTweaks.table.format_all","title":"Table: Format All Tables","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly"},
+      {"command":"nnyjTweaks.table.from_csv","title":"Table: Convert CSV","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly && editorHasSelection"},
+      {"command":"nnyjTweaks.table.from_tsv","title":"Table: Convert TSV","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly && editorHasSelection"}
     ],
     "configuration": {
       "properties": {
@@ -63,14 +84,69 @@
         },
         "nnyjTweaks.policyToggle.durations": {
           "type": "array",
-          "default": ["30m", "1h", "2h", "4h", "8h"],
-          "items": { "type": "string" },
+          "default": [
+            "30m",
+            "1h",
+            "2h",
+            "4h",
+            "8h"
+          ],
+          "items": {
+            "type": "string"
+          },
           "description": "Durations offered in the picker. Suffix m, h, or d."
+        },
+        "nnyjTweaks.table.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Markdown table navigation, formatting, column controls and CSV/TSV conversion."
+        },
+        "nnyjTweaks.table.format_on_save": {
+          "type": "boolean",
+          "default": false,
+          "description": "Format tables before saving a Markdown, MDX or Quarto document."
         }
       }
+    },
+    "keybindings": [
+      {"key":"tab","command":"nnyjTweaks.table.next_cell","when":"editorTextFocus && config.nnyjTweaks.table.enabled && nnyjTweaks.table.in_table && !editorReadonly && !editorTabMovesFocus && !suggestWidgetVisible && !inSnippetMode && !inlineSuggestionVisible"},
+      {"key":"shift+tab","command":"nnyjTweaks.table.previous_cell","when":"editorTextFocus && config.nnyjTweaks.table.enabled && nnyjTweaks.table.in_table && !editorReadonly && !editorTabMovesFocus && !suggestWidgetVisible && !inSnippetMode"}
+    ],
+    "submenus": [
+      {
+        "id": "nnyjTweaks.table.menu",
+        "label": "Markdown Table"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "submenu": "nnyjTweaks.table.menu",
+          "when": "config.nnyjTweaks.table.enabled && !editorReadonly && editorLangId =~ /^(markdown|mdx|quarto)$/",
+          "group": "modification"
+        }
+      ],
+      "nnyjTweaks.table.menu": [
+        {"command":"nnyjTweaks.table.insert_left","when":"nnyjTweaks.table.in_table","group":"1_columns"},
+        {"command":"nnyjTweaks.table.insert_right","when":"nnyjTweaks.table.in_table","group":"1_columns"},
+        {"command":"nnyjTweaks.table.move_left","when":"nnyjTweaks.table.in_table","group":"1_columns"},
+        {"command":"nnyjTweaks.table.move_right","when":"nnyjTweaks.table.in_table","group":"1_columns"},
+        {"command":"nnyjTweaks.table.align_left","when":"nnyjTweaks.table.in_table","group":"2_alignment"},
+        {"command":"nnyjTweaks.table.align_center","when":"nnyjTweaks.table.in_table","group":"2_alignment"},
+        {"command":"nnyjTweaks.table.align_right","when":"nnyjTweaks.table.in_table","group":"2_alignment"},
+        {"command":"nnyjTweaks.table.format_all","group":"4_format"},
+        {"command":"nnyjTweaks.table.from_csv","when":"editorHasSelection","group":"3_convert"},
+        {"command":"nnyjTweaks.table.from_tsv","when":"editorHasSelection","group":"3_convert"}
+      ]
     }
   },
   "scripts": {
+    "compile": "node scripts/check.js",
+    "test": "node --test scripts/table_engine_test.js",
+    "vscode:prepublish": "npm run compile",
     "package": "npx @vscode/vsce package"
+  },
+  "dependencies": {
+    "string-width": "4.2.3"
   }
 }

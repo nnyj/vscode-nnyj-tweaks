@@ -1,0 +1,5 @@
+.github/**
+scripts/**
+package-lock.json
+node_modules/**/test/**
+node_modules/**/test.js
