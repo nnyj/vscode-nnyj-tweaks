@@ -41,15 +41,7 @@ function split_row(line) {
 function find_tables(text) {
   const lines = text.split(/\r\n|\n|\r/);
   const tables = [];
-  let fence;
   for (let index = 0; index < lines.length - 1; index++) {
-    const marker = /^\s*(`{3,}|~{3,})(.*)$/.exec(lines[index]);
-    if (marker) {
-      if (!fence) fence = marker[1];
-      else if (marker[1][0] === fence[0] && marker[1].length >= fence.length && !marker[2].trim()) fence = undefined;
-      continue;
-    }
-    if (fence) continue;
     const header = split_row(lines[index]);
     const separator = split_row(lines[index + 1]);
     if (!header || !separator || header.length !== separator.length) continue;

@@ -37,10 +37,10 @@ test('tables require a matching delimiter row', () => {
   assert.equal(engine.find_tables('a | b\n--- | ---\nc | d').length, 1);
 });
 
-test('backtick and tilde fences are skipped, including shorter nested runs', () => {
+test('tables inside backtick and tilde fences are found', () => {
   for (const fence of ['```', '~~~', '````']) {
     const text = fence + 'md\n' + sample + '\n```js\n' + sample + '\n' + fence + '\n\n' + sample;
-    assert.equal(engine.find_tables(text).length, 1, fence);
+    assert.equal(engine.find_tables(text).length, 3, fence);
   }
 });
 
