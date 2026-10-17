@@ -92,8 +92,7 @@ code --install-extension nnyj-tweaks-*.vsix
 Or build locally:
 
 ```sh
-npm run package
-code --install-extension nnyj-tweaks-1.1.0.vsix
+npm run install:local
 ```
 
 ## License
