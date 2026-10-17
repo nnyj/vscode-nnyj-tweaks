@@ -26,7 +26,7 @@ Quality-of-life bundle for VS Code. Each feature toggles independently in the Se
 
 ## Usage
 
-Policy toggle: click the `$(lock) policy` status bar item, pick a group (or all groups), pick a duration (`30m`, `2h`, custom `90m`/`6h`/`2d`). Active overrides show remaining time in the status bar and expire on their own.
+Policy toggle: click the `$(lock) policy` status bar item, pick a group (or all groups), pick a duration (`30m` to `7d`, custom `90m`/`6h`/`2d`). Active overrides show remaining time in the status bar and expire on their own.
 
 Commands:
 
@@ -67,7 +67,7 @@ Table commands use the `Table:` prefix in the Command Palette and the `Markdown 
 | `nnyjTweaks.table.format_on_save` | `false` | Format tables before saving |
 | `nnyjTweaks.policyToggle.policyPath` | `C:/N/scripts/ai/policy/policy.json` | Source of ask group names |
 | `nnyjTweaks.policyToggle.overridesPath` | `C:/N/scripts/ai/policy/overrides.json` | Overrides file read by the policy guards |
-| `nnyjTweaks.policyToggle.durations` | `["30m", "1h", "2h", "4h", "8h"]` | Durations offered in the picker |
+| `nnyjTweaks.policyToggle.durations` | `["30m", "2h", "8h", "1d", "3d", "7d"]` | Durations offered in the picker |
 
 > [!NOTE]
 > Policy toggle only writes the overrides file, enforcement happens in the external guard scripts that read it. Without those, the feature does nothing useful.
