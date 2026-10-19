@@ -120,6 +120,33 @@ function move_columns(table, first, last, direction) {
   return true;
 }
 
+const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+
+// Leading rating emoji, `~` and `$` are skipped so `🟢 1.13` sorts as 1.13.
+function sort_key(cell) {
+  if (!cell || cell === '-') return { blank: true };
+  const match = /^[^\p{L}\d-]*(-?\d[\d,]*(?:\.\d+)?)/u.exec(cell);
+  return match ? { number: parseFloat(match[1].replace(/,/g, '')) } : { text: cell };
+}
+
+// Blanks stay last in both directions, numbers come before text.
+function compare_cells(a, b, direction) {
+  const left = sort_key(a);
+  const right = sort_key(b);
+  if (left.blank || right.blank) return (left.blank ? 1 : 0) - (right.blank ? 1 : 0);
+  const left_number = left.number !== undefined;
+  const right_number = right.number !== undefined;
+  if (left_number !== right_number) return left_number ? -direction : direction;
+  return direction * (left_number ? left.number - right.number : collator.compare(left.text, right.text));
+}
+
+// Stable sort, so sorting B then A orders ties in A by B.
+function sort_rows(table, column, direction) {
+  const [header, ...body] = table.rows;
+  body.sort((a, b) => compare_cells(a[column], b[column], direction));
+  table.rows = [header, ...body];
+}
+
 function from_delimited(text, delimiter) {
   const rows = [];
   let row = [];
@@ -162,4 +189,4 @@ function from_delimited(text, delimiter) {
   return { rows, aligns: Array(columns).fill('left'), indent: '' };
 }
 
-module.exports = { width, split_row, find_tables, format_table, cell_at, cell_range, navigate, insert_column, move_columns, from_delimited };
+module.exports = { width, split_row, find_tables, format_table, cell_at, cell_range, navigate, insert_column, move_columns, sort_rows, from_delimited };

@@ -22,6 +22,7 @@ Quality-of-life bundle for VS Code. Each feature toggles independently in the Se
   - Tab past the last cell adds a row
   - Insert, move and align columns from the editor context menu
   - Convert selected CSV or TSV, including quoted fields
+  - Hover a header cell to sort rows by that column, sort B then A to order ties in A by B
   - Format all tables through a command or optional format-on-save
 
 ## Usage

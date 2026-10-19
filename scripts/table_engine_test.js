@@ -127,3 +127,18 @@ test('long cells are not truncated at an arbitrary cursor column', () => {
   const table = parse('| a |\n| --- |\n| ' + text + ' |');
   assert.equal(parse(engine.format_table(table)).rows[1][0], text);
 });
+
+test('sort reads numbers past rating prefixes and keeps blanks last', () => {
+  const table = parse('| a | b |\n| --- | --- |\n| x | 🟡 3.46 |\n| y | |\n| z | 🟢 1.13 |\n| w | 1.2 |\n| v | n/a |');
+  engine.sort_rows(table, 1, 1);
+  assert.deepEqual(table.rows.map(row => row[0]), ['a', 'z', 'w', 'x', 'v', 'y']);
+  engine.sort_rows(table, 1, -1);
+  assert.deepEqual(table.rows.map(row => row[0]), ['a', 'v', 'x', 'w', 'z', 'y']);
+});
+
+test('sort is stable, so a second sort keeps the first order for ties', () => {
+  const table = parse('| a | b |\n| --- | --- |\n| 2 | x |\n| 1 | y |\n| 1 | x |');
+  engine.sort_rows(table, 1, 1);
+  engine.sort_rows(table, 0, 1);
+  assert.deepEqual(table.rows.slice(1), [['1', 'x'], ['1', 'y'], ['2', 'x']]);
+});

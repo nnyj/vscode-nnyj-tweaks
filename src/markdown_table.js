@@ -1,6 +1,7 @@
 const vscode = require('vscode');
 const engine = require('./table_engine');
 const languages = new Set(['markdown', 'mdx', 'quarto']);
+const SORT_COMMAND = 'nnyjTweaks.table.sort';
 
 function start() {
   const cache = new WeakMap();
@@ -107,6 +108,42 @@ function start() {
     const text = engine.format_table(table, document_eol(editor.document));
     await editor.edit(edit => edit.replace(selection, text));
   }
+  // Command links decode args twice, which breaks a uri arg, so the hover's active editor is used.
+  // A hover link can run after the document changed, so a stale version is dropped.
+  async function sort(version, start, column, direction) {
+    const document = vscode.window.activeTextEditor?.document;
+    if (!document || document.version !== version || busy.has(document)) return;
+    const source = tables_for(document).find(table => table.start === start);
+    if (!source) return;
+    const table = { ...source, rows: source.rows.map(row => [...row]) };
+    engine.sort_rows(table, column, direction);
+    const range = table_range(document, source);
+    const text = engine.format_table(table, document_eol(document));
+    if (text === document.getText(range)) return;
+    const edit = new vscode.WorkspaceEdit();
+    edit.replace(document.uri, range, text);
+    busy.add(document);
+    try {
+      await vscode.workspace.applyEdit(edit);
+    } finally {
+      busy.delete(document);
+    }
+  }
+  function sort_hover(document, position) {
+    const table = tables_for(document).find(candidate => candidate.start === position.line);
+    if (!table) return;
+    const cells = engine.split_row(table.lines[0]);
+    const column = cells.findIndex(candidate => position.character <= candidate.end);
+    const cell = cells[column];
+    if (!cell?.text) return;
+    const link = (label, direction) => {
+      const args = encodeURIComponent(JSON.stringify([document.version, table.start, column, direction]));
+      return `[${label}](command:${SORT_COMMAND}?${args})`;
+    };
+    const markdown = new vscode.MarkdownString(link('Sort asc', 1) + ' · ' + link('Sort desc', -1));
+    markdown.isTrusted = { enabledCommands: [SORT_COMMAND] };
+    return new vscode.Hover(markdown, new vscode.Range(position.line, cell.start, position.line, cell.end));
+  }
   const commands = {
     next_cell: () => table_command('navigate', 1),
     previous_cell: () => table_command('navigate', -1),
@@ -120,9 +157,11 @@ function start() {
     format_all,
     from_csv: () => convert(','),
     from_tsv: () => convert('\t'),
+    sort,
   };
   const subscriptions = Object.entries(commands).map(([name, handler]) => vscode.commands.registerCommand('nnyjTweaks.table.' + name, handler));
   subscriptions.push(
+    vscode.languages.registerHoverProvider([...languages], { provideHover: sort_hover }),
     vscode.window.onDidChangeActiveTextEditor(update_context),
     vscode.window.onDidChangeTextEditorSelection(update_context),
     vscode.workspace.onDidChangeTextDocument(event => {

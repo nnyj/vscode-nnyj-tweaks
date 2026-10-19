@@ -2,7 +2,7 @@
   "name": "nnyj-tweaks",
   "displayName": "NNYJ Tweaks",
   "description": "QoL bundle: Markdown tables, policy toggles, editor group fixes and line highlights, each feature toggleable",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "icon": "images/icon.png",
   "keywords": [
     "tweaks",
@@ -43,7 +43,8 @@
       {"command":"nnyjTweaks.table.align_right","title":"Table: Align Right","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly && nnyjTweaks.table.in_table"},
       {"command":"nnyjTweaks.table.format_all","title":"Table: Format All Tables","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly"},
       {"command":"nnyjTweaks.table.from_csv","title":"Table: Convert CSV","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly && editorHasSelection"},
-      {"command":"nnyjTweaks.table.from_tsv","title":"Table: Convert TSV","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly && editorHasSelection"}
+      {"command":"nnyjTweaks.table.from_tsv","title":"Table: Convert TSV","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly && editorHasSelection"},
+      {"command":"nnyjTweaks.table.sort","title":"Table: Sort by Column","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly"}
     ],
     "configuration": {
       "properties": {
@@ -120,6 +121,9 @@
       }
     ],
     "menus": {
+      "commandPalette": [
+        {"command":"nnyjTweaks.table.sort","when":"false"}
+      ],
       "editor/context": [
         {
           "submenu": "nnyjTweaks.table.menu",
