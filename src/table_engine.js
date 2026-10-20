@@ -154,8 +154,10 @@ function number_text(cell) {
   return match ? match[1].replace(/,/g, '') : undefined;
 }
 
+// ISO dates sort as text, which orders them by year, month then day.
 function sort_key(cell) {
   if (!cell || cell === '-') return { blank: true };
+  if (/^\d{4}-\d{2}/.test(cell)) return { text: cell };
   const number = number_text(cell);
   return number ? { number: parseFloat(number) } : { text: cell };
 }

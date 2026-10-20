@@ -165,3 +165,9 @@ test('sorting keeps formula rows last', () => {
   engine.sort_rows(table, 0, -1);
   assert.deepEqual(table.rows.slice(1).map(row => row[0]), ['2', '1', 'Total']);
 });
+
+test('ISO dates sort by month and day within a year', () => {
+  const table = parse('| d |\n| --- |\n| 2026-10-21 |\n| 2025-08 |\n| 2026-09-01 |');
+  engine.sort_rows(table, 0, 1);
+  assert.deepEqual(table.rows.slice(1).map(row => row[0]), ['2025-08', '2026-09-01', '2026-10-21']);
+});
