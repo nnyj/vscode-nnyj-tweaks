@@ -25,6 +25,7 @@ Quality-of-life bundle for VS Code. Each feature toggles independently in the Se
   - Convert selected CSV or TSV, including quoted fields
   - Hover a header cell to sort rows by that column, sort B then A to order ties in A by B
   - Format all tables through a command or optional format-on-save
+  - Formula cells `[](#sum)`, `avg`, `min`, `max`, `count` recalc on Tab, format and save
 
 ## Usage
 
@@ -51,6 +52,7 @@ Table commands use the `Table:` prefix in the Command Palette and the `Markdown 
 
 - Table editing supports Markdown, MDX and Quarto
 - Code fences are skipped
+- Formula cells cover every other numeric body cell in their column, sorting keeps their rows last
 - CSV and TSV use the first row as headers and convert embedded newlines to `<br>`
 - Unicode padding counts emoji graphemes as two columns
 - NNYJ Syntax Highlight supplies fixed emoji display widths and table borders

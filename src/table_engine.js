@@ -65,7 +65,33 @@ function find_tables(text) {
   return tables;
 }
 
+const formula_pattern = /^\[[^\]]*\]\(#(sum|avg|min|max|count)\)$/i;
+const formulas = {
+  sum: numbers => numbers.reduce((total, number) => total + number, 0),
+  avg: numbers => numbers.length ? formulas.sum(numbers) / numbers.length : undefined,
+  min: numbers => numbers.length ? Math.min(...numbers) : undefined,
+  max: numbers => numbers.length ? Math.max(...numbers) : undefined,
+  count: numbers => numbers.length,
+};
+
+// `[6](#sum)` cells take the value over every other numeric body cell in their column.
+function recalc(table) {
+  const body = table.rows.slice(1);
+  for (let column = 0; column < table.aligns.length; column++) {
+    const values = body.map(row => row[column]).filter(cell => !formula_pattern.test(cell)).map(number_text).filter(Boolean);
+    const numbers = values.map(parseFloat);
+    const places = Math.max(2, ...values.map(text => text.split('.')[1]?.length ?? 0));
+    for (const row of body) {
+      const match = formula_pattern.exec(row[column]);
+      if (!match) continue;
+      const result = formulas[match[1].toLowerCase()](numbers);
+      row[column] = `[${result === undefined ? '' : Number(result.toFixed(places))}](#${match[1]})`;
+    }
+  }
+}
+
 function format_table(table, eol = '\n') {
+  recalc(table);
   const widths = table.aligns.map((align, column) => Math.max(align === 'center' ? 5 : align === 'right' ? 4 : 3, ...table.rows.map(row => width(row[column]))));
   const row_text = cells => table.indent + '| ' + cells.join(' | ') + ' |';
   const lines = table.rows.map(row => row_text(row.map((cell, column) => {
@@ -122,11 +148,16 @@ function move_columns(table, first, last, direction) {
 
 const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
 
-// Leading rating emoji, `~` and `$` are skipped so `🟢 1.13` sorts as 1.13.
+// Leading rating emoji, `~` and `$` are skipped so `🟢 1.13` reads as 1.13.
+function number_text(cell) {
+  const match = /^[^\p{L}\d-]*(-?\d[\d,]*(?:\.\d+)?)/u.exec(cell);
+  return match ? match[1].replace(/,/g, '') : undefined;
+}
+
 function sort_key(cell) {
   if (!cell || cell === '-') return { blank: true };
-  const match = /^[^\p{L}\d-]*(-?\d[\d,]*(?:\.\d+)?)/u.exec(cell);
-  return match ? { number: parseFloat(match[1].replace(/,/g, '')) } : { text: cell };
+  const number = number_text(cell);
+  return number ? { number: parseFloat(number) } : { text: cell };
 }
 
 // Blanks stay last in both directions, numbers come before text.
@@ -141,10 +172,13 @@ function compare_cells(a, b, direction) {
 }
 
 // Stable sort, so sorting B then A orders ties in A by B.
+// Formula rows stay last.
 function sort_rows(table, column, direction) {
   const [header, ...body] = table.rows;
-  body.sort((a, b) => compare_cells(a[column], b[column], direction));
-  table.rows = [header, ...body];
+  const is_formula_row = row => row.some(cell => formula_pattern.test(cell));
+  const data = body.filter(row => !is_formula_row(row));
+  data.sort((a, b) => compare_cells(a[column], b[column], direction));
+  table.rows = [header, ...data, ...body.filter(is_formula_row)];
 }
 
 function from_delimited(text, delimiter) {

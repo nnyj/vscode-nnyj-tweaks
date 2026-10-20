@@ -142,3 +142,26 @@ test('sort is stable, so a second sort keeps the first order for ties', () => {
   engine.sort_rows(table, 0, 1);
   assert.deepEqual(table.rows.slice(1), [['1', 'x'], ['1', 'y'], ['2', 'x']]);
 });
+
+test('formula cells recalc over every other numeric cell in their column', () => {
+  const table = parse('| a | cost |\n| --- | --- |\n| x | $1,000 |\n| y | 🟢 2.5 |\n| z | n/a |\n| Total | [](#sum) |\n| Avg | [9](#avg) |\n| Count | [](#COUNT) |');
+  engine.format_table(table);
+  assert.deepEqual(table.rows.slice(4).map(row => row[1]), ['[1002.5](#sum)', '[501.25](#avg)', '[2](#COUNT)']);
+  const empty = parse('| a |\n| --- |\n| [5](#max) |');
+  engine.format_table(empty);
+  assert.equal(empty.rows[1][0], '[](#max)');
+});
+
+test('results round to two places or the most input decimals', () => {
+  const thirds = parse('| a |\n| --- |\n| 1 |\n| 1 |\n| 2 |\n| [](#avg) |');
+  const small = parse('| a |\n| --- |\n| 1 |\n| 0.0001 |\n| [](#sum) |');
+  engine.format_table(thirds);
+  engine.format_table(small);
+  assert.deepEqual([thirds.rows[4][0], small.rows[3][0]], ['[1.33](#avg)', '[1.0001](#sum)']);
+});
+
+test('sorting keeps formula rows last', () => {
+  const table = parse('| a | b |\n| --- | --- |\n| 1 | x |\n| Total | [3](#sum) |\n| 2 | y |');
+  engine.sort_rows(table, 0, -1);
+  assert.deepEqual(table.rows.slice(1).map(row => row[0]), ['2', '1', 'Total']);
+});
