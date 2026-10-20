@@ -2,7 +2,7 @@
   "name": "nnyj-tweaks",
   "displayName": "NNYJ Tweaks",
   "description": "QoL bundle: Markdown tables, policy toggles, editor group fixes and line highlights, each feature toggleable",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "icon": "images/icon.png",
   "keywords": [
     "tweaks",
@@ -107,6 +107,21 @@
           "type": "boolean",
           "default": false,
           "description": "Format tables before saving a Markdown, MDX or Quarto document."
+        },
+        "nnyjTweaks.openExternal.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Open matching files in the OS default app and close the VS Code tab."
+        },
+        "nnyjTweaks.openExternal.extensions": {
+          "type": "array",
+          "default": [
+            ".pdf"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "description": "Lowercase file extensions opened externally, with leading dot."
         }
       }
     },

@@ -16,6 +16,7 @@ Quality-of-life bundle for VS Code. Each feature toggles independently in the Se
 - Policy toggle: status bar item to grant timed allow overrides for AI CLI policy ask groups, reads group names from `policy.json`, writes `overrides.json` consumed by external policy guards
 - Open left: when opening a file auto-splits a new editor group to the right of a locked webview group, moves the new group to the left so the webview stays rightmost
 - Close empty: when the last tab in a locked group closes, unlocks and closes the group, VS Code otherwise leaves an empty locked canvas that `closeEmptyGroups` skips
+- Open external: opening a matching file, `.pdf` by default, hands it to the OS default app and closes the VS Code tab
 - Line highlight: toggle a background highlight on selected lines, single color, tracks line moves during edits, in-session only (cleared on window reload)
 - Markdown tables:
   - Tab and Shift+Tab navigate cells and pad columns
@@ -44,7 +45,7 @@ Suggested keybinding:
 { "key": "alt+q", "command": "nnyjTweaks.lineHighlight.toggle", "when": "editorTextFocus" }
 ```
 
-Open left and close empty run automatically, no commands.
+Open left, close empty and open external run automatically, no commands.
 
 Table commands use the `Table:` prefix in the Command Palette and the `Markdown Table` editor context menu.
 
@@ -62,6 +63,8 @@ Table commands use the `Table:` prefix in the Command Palette and the `Markdown 
 | `nnyjTweaks.policyToggle.enabled` | `true` | Enable the policy status bar toggle |
 | `nnyjTweaks.openLeft.enabled` | `true` | Enable locked-group placement fix |
 | `nnyjTweaks.closeEmpty.enabled` | `true` | Enable locked empty group close |
+| `nnyjTweaks.openExternal.enabled` | `true` | Enable external open of matching files |
+| `nnyjTweaks.openExternal.extensions` | `[".pdf"]` | Lowercase extensions with leading dot |
 | `nnyjTweaks.lineHighlight.enabled` | `true` | Enable line highlight commands |
 | `nnyjTweaks.lineHighlight.color` | `#ffe60030` | Highlight background, hex with alpha |
 | `nnyjTweaks.table.enabled` | `true` | Enable table editing |
@@ -80,6 +83,8 @@ Policy toggle watches the overrides directory (a directory watch, since guards d
 Open left listens to tab group changes. A newly opened single-file group whose left neighbor contains no file tabs is treated as an auto-split beside a locked webview, and gets moved one group left.
 
 Close empty listens to tab close events. After a short settle delay, a group left with zero tabs is closed via the tab groups API (no focus change, safe across auxiliary windows). A sole active group is only unlocked, so the next editor reuses it instead of splitting beside it.
+
+Open external listens to tab open events. A file tab whose extension matches is passed to `vscode.env.openExternal`, then closed.
 
 ## Install
 
