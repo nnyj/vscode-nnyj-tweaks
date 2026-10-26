@@ -12,27 +12,32 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+        with:
+          # full history and tags, the release notes list commits since the previous tag
+          fetch-depth: 0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Test extension
-        run: npm test
+          cache: 'npm'
 
       - name: Build extension
-        run: npx --yes @vscode/vsce package
+        run: |
+          npm ci
+          npm test
+          npm run package
 
       - name: Create release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           tag="${GITHUB_REF#refs/tags/}"
+          prev=$(git describe --tags --abbrev=0 "$tag^" 2>/dev/null || true)
+          notes=$(printf "## What's Changed\n%s" "$(git log --format='* %s' ${prev:+$prev..}$tag)")
           gh release create "$tag" \
             --title="$tag" \
             --draft \
+            --notes "$notes" \
+            --generate-notes \
             *.vsix
