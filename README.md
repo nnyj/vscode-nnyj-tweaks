@@ -14,8 +14,8 @@ Quality-of-life bundle for VS Code. Each feature toggles independently in the Se
 ## Features
 
 - Policy toggle: status bar item to grant timed allow overrides for AI CLI policy ask groups, reads group names from `policy.json`, writes `overrides.json` consumed by external policy guards
-- Open left: when opening a file auto-splits a new editor group to the right of a locked webview group, moves the new group to the left so the webview stays rightmost
-- Close empty: when the last tab in a locked group closes, unlocks and closes the group, VS Code otherwise leaves an empty locked canvas that `closeEmptyGroups` skips
+- Open left: when a file opens in a new group to the right of a webview-only group (chat, preview), swaps the two groups so the webview stays rightmost, if the webview group is active it moves right instead so focus stays in it
+- Close empty: when the last tab in any group closes, closes the group, VS Code otherwise leaves an empty locked canvas that `closeEmptyGroups` skips
 - Open external: opening a matching file, `.pdf` by default, hands it to the OS default app and closes the VS Code tab
 - Line highlight: toggle a background highlight on selected lines, single color, tracks line moves during edits, in-session only (cleared on window reload)
 - Markdown tables:
@@ -82,7 +82,7 @@ Table commands use the `Table:` prefix in the Command Palette and the `Markdown 
 
 Policy toggle watches the overrides directory (a directory watch, since guards delete and recreate the file, which kills file-level watches) and refreshes the status bar every 30s so expiry shows without an event. Overrides are written atomically via temp file rename; an empty override set deletes the file.
 
-Open left listens to tab group changes. A newly opened single-file group whose left neighbor contains no file tabs is treated as an auto-split beside a locked webview, and gets moved one group left.
+Open left listens to tab group changes. A single-file group whose left neighbor has tabs but no file tabs is treated as an auto-split beside a locked webview. The API exposes no lock state, so any webview-only neighbor matches. If the webview group is active, as with a background open, the webview group moves one group right and keeps focus, else the file group moves one group left.
 
 Close empty listens to tab close events. After a short settle delay, a group left with zero tabs is closed via the tab groups API (no focus change, safe across auxiliary windows). A sole active group is only unlocked, so the next editor reuses it instead of splitting beside it.
 
