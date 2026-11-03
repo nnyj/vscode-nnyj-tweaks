@@ -82,7 +82,7 @@ Table commands use the `Table:` prefix in the Command Palette and the `Markdown 
 
 Policy toggle watches the overrides directory (a directory watch, since guards delete and recreate the file, which kills file-level watches) and refreshes the status bar every 30s so expiry shows without an event. Overrides are written atomically via temp file rename; an empty override set deletes the file.
 
-Open left listens to tab group changes. A single-file group whose left neighbor has tabs but no file tabs is treated as an auto-split beside a locked webview. The API exposes no lock state, so any webview-only neighbor matches. If the webview group is active, as with a background open, the webview group moves one group right and keeps focus, else the file group moves one group left.
+Open left listens to tab group changes. A single-file group whose left neighbor has tabs but no file tabs is treated as an auto-split beside a locked webview. The API exposes no lock state, so any webview-only neighbor matches. The check waits 100ms, since the tab open event arrives before the group activation update. If the webview group is then active, as with a background open, the webview group moves one group right and keeps focus, else the file group moves one group left.
 
 Close empty listens to tab close events. After a short settle delay, a group left with zero tabs is closed via the tab groups API (no focus change, safe across auxiliary windows). A sole active group is only unlocked, so the next editor reuses it instead of splitting beside it.
 

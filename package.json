@@ -2,7 +2,7 @@
   "name": "nnyj-tweaks",
   "displayName": "NNYJ Tweaks",
   "description": "QoL bundle: Markdown tables, policy toggles, editor group fixes and line highlights, each feature toggleable",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "icon": "images/icon.png",
   "keywords": [
     "tweaks",
@@ -28,23 +28,87 @@
   },
   "contributes": {
     "commands": [
-      {"command":"nnyjTweaks.policy.pick","title":"Policy Toggle: Allow Group Temporarily"},
-      {"command":"nnyjTweaks.policy.clear","title":"Policy Toggle: Clear All Overrides"},
-      {"command":"nnyjTweaks.lineHighlight.toggle","title":"Line Highlight: Toggle on Selected Lines"},
-      {"command":"nnyjTweaks.lineHighlight.clearAll","title":"Line Highlight: Clear All"},
-      {"command":"nnyjTweaks.table.next_cell","title":"Table: Next Cell","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly && nnyjTweaks.table.in_table"},
-      {"command":"nnyjTweaks.table.previous_cell","title":"Table: Previous Cell","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly && nnyjTweaks.table.in_table"},
-      {"command":"nnyjTweaks.table.insert_left","title":"Table: Insert Column Left","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly && nnyjTweaks.table.in_table"},
-      {"command":"nnyjTweaks.table.insert_right","title":"Table: Insert Column Right","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly && nnyjTweaks.table.in_table"},
-      {"command":"nnyjTweaks.table.move_left","title":"Table: Move Column Left","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly && nnyjTweaks.table.in_table"},
-      {"command":"nnyjTweaks.table.move_right","title":"Table: Move Column Right","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly && nnyjTweaks.table.in_table"},
-      {"command":"nnyjTweaks.table.align_left","title":"Table: Align Left","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly && nnyjTweaks.table.in_table"},
-      {"command":"nnyjTweaks.table.align_center","title":"Table: Align Center","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly && nnyjTweaks.table.in_table"},
-      {"command":"nnyjTweaks.table.align_right","title":"Table: Align Right","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly && nnyjTweaks.table.in_table"},
-      {"command":"nnyjTweaks.table.format_all","title":"Table: Format All Tables","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly"},
-      {"command":"nnyjTweaks.table.from_csv","title":"Table: Convert CSV","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly && editorHasSelection"},
-      {"command":"nnyjTweaks.table.from_tsv","title":"Table: Convert TSV","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly && editorHasSelection"},
-      {"command":"nnyjTweaks.table.sort","title":"Table: Sort by Column","enablement":"config.nnyjTweaks.table.enabled && !editorReadonly"}
+      {
+        "command": "nnyjTweaks.policy.pick",
+        "title": "Policy Toggle: Allow Group Temporarily"
+      },
+      {
+        "command": "nnyjTweaks.policy.clear",
+        "title": "Policy Toggle: Clear All Overrides"
+      },
+      {
+        "command": "nnyjTweaks.lineHighlight.toggle",
+        "title": "Line Highlight: Toggle on Selected Lines"
+      },
+      {
+        "command": "nnyjTweaks.lineHighlight.clearAll",
+        "title": "Line Highlight: Clear All"
+      },
+      {
+        "command": "nnyjTweaks.table.next_cell",
+        "title": "Table: Next Cell",
+        "enablement": "config.nnyjTweaks.table.enabled && !editorReadonly && nnyjTweaks.table.in_table"
+      },
+      {
+        "command": "nnyjTweaks.table.previous_cell",
+        "title": "Table: Previous Cell",
+        "enablement": "config.nnyjTweaks.table.enabled && !editorReadonly && nnyjTweaks.table.in_table"
+      },
+      {
+        "command": "nnyjTweaks.table.insert_left",
+        "title": "Table: Insert Column Left",
+        "enablement": "config.nnyjTweaks.table.enabled && !editorReadonly && nnyjTweaks.table.in_table"
+      },
+      {
+        "command": "nnyjTweaks.table.insert_right",
+        "title": "Table: Insert Column Right",
+        "enablement": "config.nnyjTweaks.table.enabled && !editorReadonly && nnyjTweaks.table.in_table"
+      },
+      {
+        "command": "nnyjTweaks.table.move_left",
+        "title": "Table: Move Column Left",
+        "enablement": "config.nnyjTweaks.table.enabled && !editorReadonly && nnyjTweaks.table.in_table"
+      },
+      {
+        "command": "nnyjTweaks.table.move_right",
+        "title": "Table: Move Column Right",
+        "enablement": "config.nnyjTweaks.table.enabled && !editorReadonly && nnyjTweaks.table.in_table"
+      },
+      {
+        "command": "nnyjTweaks.table.align_left",
+        "title": "Table: Align Left",
+        "enablement": "config.nnyjTweaks.table.enabled && !editorReadonly && nnyjTweaks.table.in_table"
+      },
+      {
+        "command": "nnyjTweaks.table.align_center",
+        "title": "Table: Align Center",
+        "enablement": "config.nnyjTweaks.table.enabled && !editorReadonly && nnyjTweaks.table.in_table"
+      },
+      {
+        "command": "nnyjTweaks.table.align_right",
+        "title": "Table: Align Right",
+        "enablement": "config.nnyjTweaks.table.enabled && !editorReadonly && nnyjTweaks.table.in_table"
+      },
+      {
+        "command": "nnyjTweaks.table.format_all",
+        "title": "Table: Format All Tables",
+        "enablement": "config.nnyjTweaks.table.enabled && !editorReadonly"
+      },
+      {
+        "command": "nnyjTweaks.table.from_csv",
+        "title": "Table: Convert CSV",
+        "enablement": "config.nnyjTweaks.table.enabled && !editorReadonly && editorHasSelection"
+      },
+      {
+        "command": "nnyjTweaks.table.from_tsv",
+        "title": "Table: Convert TSV",
+        "enablement": "config.nnyjTweaks.table.enabled && !editorReadonly && editorHasSelection"
+      },
+      {
+        "command": "nnyjTweaks.table.sort",
+        "title": "Table: Sort by Column",
+        "enablement": "config.nnyjTweaks.table.enabled && !editorReadonly"
+      }
     ],
     "configuration": {
       "properties": {
@@ -126,8 +190,16 @@
       }
     },
     "keybindings": [
-      {"key":"tab","command":"nnyjTweaks.table.next_cell","when":"editorTextFocus && config.nnyjTweaks.table.enabled && nnyjTweaks.table.in_table && !editorReadonly && !editorTabMovesFocus && !suggestWidgetVisible && !inSnippetMode && !inlineSuggestionVisible"},
-      {"key":"shift+tab","command":"nnyjTweaks.table.previous_cell","when":"editorTextFocus && config.nnyjTweaks.table.enabled && nnyjTweaks.table.in_table && !editorReadonly && !editorTabMovesFocus && !suggestWidgetVisible && !inSnippetMode"}
+      {
+        "key": "tab",
+        "command": "nnyjTweaks.table.next_cell",
+        "when": "editorTextFocus && config.nnyjTweaks.table.enabled && nnyjTweaks.table.in_table && !editorReadonly && !editorTabMovesFocus && !suggestWidgetVisible && !inSnippetMode && !inlineSuggestionVisible"
+      },
+      {
+        "key": "shift+tab",
+        "command": "nnyjTweaks.table.previous_cell",
+        "when": "editorTextFocus && config.nnyjTweaks.table.enabled && nnyjTweaks.table.in_table && !editorReadonly && !editorTabMovesFocus && !suggestWidgetVisible && !inSnippetMode"
+      }
     ],
     "submenus": [
       {
@@ -137,7 +209,10 @@
     ],
     "menus": {
       "commandPalette": [
-        {"command":"nnyjTweaks.table.sort","when":"false"}
+        {
+          "command": "nnyjTweaks.table.sort",
+          "when": "false"
+        }
       ],
       "editor/context": [
         {
@@ -147,16 +222,55 @@
         }
       ],
       "nnyjTweaks.table.menu": [
-        {"command":"nnyjTweaks.table.insert_left","when":"nnyjTweaks.table.in_table","group":"1_columns"},
-        {"command":"nnyjTweaks.table.insert_right","when":"nnyjTweaks.table.in_table","group":"1_columns"},
-        {"command":"nnyjTweaks.table.move_left","when":"nnyjTweaks.table.in_table","group":"1_columns"},
-        {"command":"nnyjTweaks.table.move_right","when":"nnyjTweaks.table.in_table","group":"1_columns"},
-        {"command":"nnyjTweaks.table.align_left","when":"nnyjTweaks.table.in_table","group":"2_alignment"},
-        {"command":"nnyjTweaks.table.align_center","when":"nnyjTweaks.table.in_table","group":"2_alignment"},
-        {"command":"nnyjTweaks.table.align_right","when":"nnyjTweaks.table.in_table","group":"2_alignment"},
-        {"command":"nnyjTweaks.table.format_all","group":"4_format"},
-        {"command":"nnyjTweaks.table.from_csv","when":"editorHasSelection","group":"3_convert"},
-        {"command":"nnyjTweaks.table.from_tsv","when":"editorHasSelection","group":"3_convert"}
+        {
+          "command": "nnyjTweaks.table.insert_left",
+          "when": "nnyjTweaks.table.in_table",
+          "group": "1_columns"
+        },
+        {
+          "command": "nnyjTweaks.table.insert_right",
+          "when": "nnyjTweaks.table.in_table",
+          "group": "1_columns"
+        },
+        {
+          "command": "nnyjTweaks.table.move_left",
+          "when": "nnyjTweaks.table.in_table",
+          "group": "1_columns"
+        },
+        {
+          "command": "nnyjTweaks.table.move_right",
+          "when": "nnyjTweaks.table.in_table",
+          "group": "1_columns"
+        },
+        {
+          "command": "nnyjTweaks.table.align_left",
+          "when": "nnyjTweaks.table.in_table",
+          "group": "2_alignment"
+        },
+        {
+          "command": "nnyjTweaks.table.align_center",
+          "when": "nnyjTweaks.table.in_table",
+          "group": "2_alignment"
+        },
+        {
+          "command": "nnyjTweaks.table.align_right",
+          "when": "nnyjTweaks.table.in_table",
+          "group": "2_alignment"
+        },
+        {
+          "command": "nnyjTweaks.table.format_all",
+          "group": "4_format"
+        },
+        {
+          "command": "nnyjTweaks.table.from_csv",
+          "when": "editorHasSelection",
+          "group": "3_convert"
+        },
+        {
+          "command": "nnyjTweaks.table.from_tsv",
+          "when": "editorHasSelection",
+          "group": "3_convert"
+        }
       ]
     }
   },
